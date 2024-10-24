@@ -5,16 +5,16 @@ using namespace std;
 // Function to check if the public key is valid
 bool isValidPublicKey(int e, int n);
 
-// Function to factorize n into p and q (p < q)
+// factorize n into p and q (p < q)
 void factorizeN(int n, int& p, int& q);
 
-// Function to compute Euler's Totient Function phi(n)
+//  compute Euler's Totient Function phi(n) =(p-1)(q-1)
 int computePhi(int p, int q);
 
-// Function to compute the modular inverse d of e mod phi(n)
+// find the modular inverse of e mod phi(n)
 int computeD(int e, int phi);
 
-// Function to perform modular exponentiation
+// modular exponential for decoding
 int modPow(int base, int exponent, int modulus);
 
 // Function to decode the encrypted message
@@ -23,6 +23,9 @@ void decodeMessage(const vector<int>& encryptedMessage, int d, int n, vector<int
 // Function to map integers to characters based on the given encoding scheme
 char mapIntegerToChar(int value);
 
+//need to see if e and phi(n) are coprime, for this we know GCD(e , phi(n) ) =1 
+int gcd(int a, int b); 
+bool isCoprime(int a , int b);
 int main() {
     int e, n;
     cin >> e >> n;
@@ -53,27 +56,33 @@ int main() {
     // Output p, q, phi(n), and d
     cout << p << " " << q << " " << phi << " " << d << endl;
 
-    // Decode the message
-    vector<int> decodedIntegers;
-    decodeMessage(encryptedMessage, d, n, decodedIntegers);
+    //TODO CHECK IF PH(N) AND e are CO PRIME
+    if(isCoprime(phi,e)){
+            //decode
+            vector<int> decodedIntegers;
+        decodeMessage(encryptedMessage, d, n, decodedIntegers);
 
-    // Output decoded integers
-    for (size_t i = 0; i < decodedIntegers.size(); ++i) {
-        cout << decodedIntegers[i];
-        if (i != decodedIntegers.size() - 1) {
-            cout << " ";
+        // Output decoded integers
+        for (int i = 0; i < decodedIntegers.size(); ++i) {
+            cout << decodedIntegers[i];
+            if (i != decodedIntegers.size() - 1) {
+                cout << " ";
+            }
         }
-    }
-    cout << endl;
+        cout << endl;
 
-    // Output decoded characters
-    for (int val : decodedIntegers) {
-        char c = mapIntegerToChar(val);
-        cout << c;
-    }
-    cout << endl;
-
+        // Output decoded characters
+        for (int val : decodedIntegers) {
+            char c = mapIntegerToChar(val);
+            cout << c;
+        }
+        cout << endl;
+        }
     return 0;
+
+    
+    // Decode the message
+   
 }
 
 char mapIntegerToChar(int value) {
@@ -99,4 +108,22 @@ char mapIntegerToChar(int value) {
         // ?
         return '?';
     }
+}
+void decodeMessage(const vector<int>& encryptedMessage, int d, int n, vector<int>& decodedIntegers){
+    for(int i =0; i < encryptedMessage.size(); i++){
+        int c = encryptedMessage[i];
+        //To decode the message preform c^d mod n
+        decodedIntegers[i]= modPow(c,d,n);
+}
+
+}
+// With a little help of Euclid's algo
+int gcd(int a,int b){
+    if (a ==b) return a;
+    //if a <b swap them
+    if (a < b){int q= a; a=b; b=q;}
+    return gcd(a-b,b);
+}
+bool isCoprime(int a , int b){
+    return gcd(a,b) ==1; 
 }
