@@ -40,4 +40,4 @@ The program prints:
 
 ## Acknowledgments
 
-Thanks to Professor Strzheletska and Mr. Euclid that made this project possible.
+Thanks to Professor Strzheletska and Mr. Euclid who made this project possible.
